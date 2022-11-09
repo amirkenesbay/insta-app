@@ -1,20 +1,20 @@
 package com.amirkenesbay.sweater.controller;
 
-import com.amirkenesbay.sweater.domain.Role;
 import com.amirkenesbay.sweater.domain.User;
-import com.amirkenesbay.sweater.repository.UserRepository;
+import com.amirkenesbay.sweater.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import java.util.Collections;
 import java.util.Map;
 
 @Controller
 public class RegistrationController {
     @Autowired
-    private UserRepository userRepo;
+    private UserService userService;
 
     @GetMapping("/registration")
     public String registration() {
@@ -23,16 +23,10 @@ public class RegistrationController {
 
     @PostMapping("/registration")
     public String addUser(User user, Map<String, Object> model) {
-        User userFromDb = userRepo.findByUsername(user.getUsername());
-
-        if (userFromDb != null) {
+        if (!userService.addUser(user)) {
             model.put("message", "User exists!");
             return "registration";
         }
-
-        user.setActive(true);
-        user.setRoles(Collections.singleton(Role.USER));
-        userRepo.save(user);
 
         return "redirect:/login";
     }
