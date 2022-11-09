@@ -40,4 +40,14 @@ public class UserController {
         userService.saveUser(user, username, form);
         return "redirect:/user";
     }
+
+    @GetMapping("profile")
+    public String getProfile(Model model, @AuthenticationPrincipal User user){
+        model.addAttribute("username", user.getUsername());
+        model.addAttribute("email", user.getEmail());
+
+        return "profile";
+    }
+    // https://www.youtube.com/watch?v=ArM7nCys4hY&list=PLU2ftbIeotGoGSEUf54LQH-DgiQPF2XRO&index=11
+    // 8:43
 }
